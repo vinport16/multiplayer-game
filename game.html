@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="scripts/preload.js"></script>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<title>game project</title>
+</head>
+
+<body>
+
+<div class="list_shell">
+	<div class="inner_list" id="list">
+		
+		
+	</div>
+</div>
+
+<div class="chat_shell" id="chat_shell">
+	<div class="inner_chat" id="messviewer">
+		
+	</div>
+</div>
+
+<div class="chatterbox">
+	<div class="chatwith" id="chatwith"> chatting with: none </div>
+	<textarea id="textbox" onkeydown="sendMessage(event);" onkeyup="clearEnter(event);"></textarea>
+</div>
+
+<div class="info_shell">
+	<div style="float:left">
+		<div class="scorelabel">score: <button class="sharescore" onclick="sendScore();">share<br>score</button></div>
+		<div class="score" id="scorebox">0</div>
+	</div>
+	<div class="shouts">
+		<button class="confirm" onclick="confirmActions();" id="confirm">confirm actions</button>
+		<div id="info">round 1 / rank #0 / score per opponent: 0</div>
+	</div>
+</div>
+
+</body>
+
+<script src="scripts/pagecontroller.js"></script>
+<script src="scripts/gamecontroller.js"></script>
+
+</html>

@@ -1,0 +1,231 @@
+body{
+	margin: 0px;
+	padding:0px;
+	font-family: "Arial";
+	font-size: 16pt;
+}
+
+div.list_shell {
+	background-color: lightpink;
+	float:left;
+	width:30vw;
+	height:100vh;
+	overflow-y: scroll;
+}
+
+div.inner_list {
+	margin: 10px;
+}
+
+li{
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 5px;
+	border-color: white;
+	background-color: #ffcccc;
+
+	list-style: none;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+
+	text-align: left;
+}
+
+div.namebox{
+	float:left;
+	width:calc(100%);
+	height:6vh;
+}
+
+div.signal {
+	height:10px;
+	min-width: 10px;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 8px;
+	background-color: red;
+	float: right;
+	font-size: 10px;
+	padding: 4px;
+}
+
+button{
+	border-width: 0px;
+	width:8vw;
+	margin:3px;
+	height:6vh;
+}
+
+button.coop{
+	background-color: lightgreen;
+}
+
+button.betray{
+	background-color: red;
+}
+
+button.ignore{
+	background-color: lightblue;
+}
+
+button.coopselect{
+	background-color: lightgreen;
+	outline-style:solid;
+	outline-width:2px;
+}
+
+button.betrayselect{
+	background-color: red;
+	outline-style:solid;
+	outline-width:2px;
+}
+
+button.ignoreselect{
+	background-color: lightblue;
+	outline-style:solid;
+	outline-width:2px;
+}
+
+div.lastround{
+	font-size: 10pt;
+}
+
+div.chat_shell {
+	background-color: lightblue;
+	float:right;
+	align-self: inline-block;
+	width: 70vw;
+	height: 65vh;
+	overflow-y: scroll;
+}
+
+div.inner_chat {
+	margin: 10px;
+}
+
+div.messagebox {
+	align-self: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 2px;
+	clear:both;
+}
+
+div.you {
+	background-color: #ccccff;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+	border-radius: 5px;
+
+	max-width: 40vw;
+	float: right;
+}
+
+div.them {
+	background-color: #ddddee;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+	border-radius: 5px;
+
+	max-width: 40vw;
+	float: left;
+}
+
+div.info_message {
+	background-color: #c0fefe; /* covfefe haha lol get reket drumph */
+
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+	border-radius: 5px;
+	width: 30vw;
+	text-align: center;
+	float: right;
+	position: relative;
+	left: calc(12px - 20vw);
+
+}
+
+div.chatterbox {
+	float:right;
+	align-self: inline-block;
+	width: 70vw;
+	height: 70px;
+	background-color: white;
+}
+
+div.chatwith{
+	padding:1.5vw;
+	float:left;
+	font-size:2vw;
+	width: calc(27vw - 32px);
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+textarea {
+	margin: 11px;
+	background-color: #ccccff;
+	width:40vw;
+
+	background-color: #ccccff;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+	border-radius: 5px;
+
+	float:right;
+	font-size: inherit;
+	border-radius: 5px;
+	border-style:none;
+	resize: none;
+}
+
+div.info_shell {
+	background-color: lightgreen;
+	float:right;
+	align-self: inline-block;
+	width: 70vw;
+	height: calc(35vh - 70px);
+	overflow: hidden;
+}
+
+div.scorelabel{
+	font-size:5vh;
+}
+
+button.sharescore{
+	margin-top:1.5vh;
+	margin-left:1.5vh;
+	padding-top:0px;
+	width:60px;
+	float:right;
+	background-color: pink;
+	border-radius: 10px;
+}
+
+div.score {
+	font-size:calc(25vh - 70px);
+}
+
+div.shouts {
+	float:right;
+	width: calc(70vw - 25vh - 40px);
+	height: calc(35vh - 70px - 40px);
+
+	margin:10px;
+	padding:10px;
+	border-radius:5px;
+	background-color: white;
+}
+
+button.confirm {
+	background-color: pink;
+	float:right;
+	border-radius: 10px;
+	height:30px;
+	width: auto;
+}

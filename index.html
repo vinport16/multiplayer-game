@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>index</title>
+</head>
+<body>
+If you are not placed in a game, refresh and choose a new username.
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+var socket = io();
+
+socket.emit("username", prompt("Enter a username (max 30 characters)."));
+
+socket.on("redirect",function(page){
+	location.href = page;
+});
+
+</script>
+
+</html>
