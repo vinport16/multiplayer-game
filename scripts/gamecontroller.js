@@ -54,8 +54,21 @@ function sendScore(){
 	socket.emit("sendScore",currentchat);
 }
 
+function joinGame(name){
+	socket.emit("joinGame", name);
+	refreshPlayers();
+}
+
+socket.on("game", function(info){
+	addGame(info);
+});
+
 socket.on("newplayer", function(player){
 	addPlayer(player);
+});
+
+socket.on("clearList", function(){
+	clearList();
 });
 
 socket.on("message", function(msg){

@@ -22,11 +22,24 @@ function addListItem(player){
 	list.innerHTML += string + "<br><div class='lastround'>"+player.lastround+"</div></li>";
 }
 
+function addGame(info){
+	string = "<li  onclick='joinGame(\""+info.name+"\");'><div class='namebox'>"+info.name+"</div></br>";
+	string += "rounds: "+info.rounds+"</br>";
+	string += "occupancy: "+info.players+"/"+info.size+"</br>"
+	string += "is open: "+info.open+"</li>";
+	
+	list.innerHTML += string;
+}
+
 function refreshPlayers(){
-	list.innerHTML = "";
+	clearList();
 	for(i in players){
 		addListItem(players[i]);
 	}
+}
+
+function clearList(){
+	list.innerHTML = "";
 }
 
 function showMessage(message){

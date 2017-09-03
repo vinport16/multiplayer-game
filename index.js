@@ -5,9 +5,48 @@ var http = require('http').createServer(app);
 var io = sio(http);
 var port = process.env.PORT || 3030; //runs on heroku or localhost:3300
 
+function sendGame(game, socket){
+	info = {name:game.name,
+					size:game.size,
+					players:game.players.length,
+					rounds:game.maxrounds,
+					open:game.open};
+	socket.emit("game", info);
+}
+
+function getGameByName(name){
+	for(i = 0; i < games.length; i++){
+		if(games[i].name === name){
+			return games[i];
+		}
+	}
+	return false;
+}
+
+function sendClearList(player){
+	if(player.socket.connected){
+		player.socket.emit("clearList");
+	}
+}
+
 function sendMessage(message, player){
 	if(player.socket.connected){
 		player.socket.emit("message", message);
+	}
+}
+
+function sendGameClosedMessage(game){
+	for(a = 0; a < game.players.length-1; a++){
+		for(b = a+1; b < game.players.length; b++){
+			message = {};
+			message.to = game.players[a].name;
+			message.from = game.players[b].name;
+			message.official = true;
+			message.content = "Game is full, play may begin.";
+			game.messages.push(message);
+			sendMessage(message, game.players[a]);
+			sendMessage(message, game.players[b]);
+		}
 	}
 }
 
@@ -22,12 +61,14 @@ function getPlayer(name, game){
 }
 
 function addPlayer(player, game){
+	player.game = game;
 	players = game.players;
 	for(i = 0; i < players.length; i++){
 		if(players[i].socket.connected){
 			console.log("sending player("+player.name+") to "+players[i].name);
 			players[i].socket.emit("newplayer", player.name);
-
+		}
+		if(player.socket.connected){
 			console.log("sending player("+players[i].name+") to "+player.name);
 			player.socket.emit("newplayer", players[i].name);
 		}
@@ -35,15 +76,16 @@ function addPlayer(player, game){
 	console.log("added "+player.name);
 	game.players.push(player);
 
-	if(game.players.length >= game.size){
+	if(player.game.players.length >= player.game.size){
 		game.open = false;
-		console.log("GAME ("+game.name+") CLOSED")
+		console.log("GAME ("+game.name+") CLOSED");
+		sendGameClosedMessage(game);
 	}
 }
 
-function sendInfo(player, game){
+function sendInfo(player){
 	// send players
-	players = game.players;
+	players = player.game.players;
 	for(i = 0; i < players.length; i++){
 		if(players[i].name != player.name){
 			if(players[i].socket.connected){
@@ -53,7 +95,7 @@ function sendInfo(player, game){
 		}
 	}
 	// send messages
-	messages = game.messages;
+	messages = player.game.messages;
 	for(i = 0; i < messages.length; i++){
 		mess = messages[i];
 		if(mess.to === player.name || mess.from === player.name){
@@ -88,10 +130,10 @@ function determineRanks(players){
 	}
 }
 
-function sendScoreInfo(player, game){
+function sendScoreInfo(player){
 	newscore = {score:player.score,
 				rank:player.rank,
-				round:game.currentround};
+				round:player.game.currentround};
 	if(player.socket.connected){
 		player.socket.emit("newscore", newscore);
 	}
@@ -161,7 +203,7 @@ function doGame(game){
 
 		for(i = 0; i < players.length; i++){
 			players[i].confirmed = false;
-			sendScoreInfo(players[i], game);
+			sendScoreInfo(players[i]);
 		}
 
 		console.log(game.currentround+" > "+game.maxrounds+" = "+(game.currentround > game.maxrounds));
@@ -187,19 +229,71 @@ function doGame(game){
 				}
 			}
 
-			game = {name:"1st Game",
-					size:4,
+			game = {name:game.name,
+					size:game.size,
 					players:[],
 					currentround:1,
-					maxrounds:5,
+					maxrounds:game.maxrounds,
 					messages:[],
 					open:true};
 
 		}
 
+		for(a = games.length-1; a >= 0; a--){
+			if(games[a].name == game.name){
+				games[a] = game;
+			}
+		}
 
 	}
-	return game;
+}
+
+function find_or_create_game(player){
+	
+	sendClearList(player);
+
+	for(i = 0; i < games.length; i++){
+		sendGame(games[i], player.socket);
+	}
+
+	player.socket.on("joinGame", function(gamename){
+		console.log(player.name+" requested join "+gamename);
+		game = getGameByName(gamename);
+		if(game && game.open){
+			addPlayer(player, game);
+			console.log(player.name + " joined " + game.name);
+			//return game;
+		}else if(!game || !game.open){
+			console.log(player.name+" failed to join "+gamename);
+			find_or_create_game(player);
+		}
+	});
+
+}
+
+function findPlayer(name, socket){
+	for(a = 0; a < games.length; a++){
+		player = getPlayer(name, games[a]);
+		if(player){
+			if(!player.socket.connected){
+				player.socket = socket;
+				console.log(player.socket.connected);
+				return player;
+			}else{
+				//username taken
+				return false;
+			}
+		}
+	}
+	player = {};
+	player.name = name;
+	player.score = 0;
+	player.actions = {};
+	player.confirmed = false;
+	player.socket = socket;
+	player.rank = 0;
+	player.game = false;
+	return player;
 }
 
 http.listen(port);
@@ -249,6 +343,7 @@ player object:
  - confirmed boolean
  - socket socket
  - rank
+ - game (game object)
 
 message object:
  - to string
@@ -260,8 +355,8 @@ message object:
 
 var games = [];  // let's make a new game
 
-game = {name:"1st Game",
-		size:4,
+game = {name:"Small",
+		size:3,
 		players:[],
 		currentround:1,
 		maxrounds:5,
@@ -269,6 +364,47 @@ game = {name:"1st Game",
 		open:true};
 
 games.push(game);
+
+game = {name:"Five by Five",
+		size:5,
+		players:[],
+		currentround:1,
+		maxrounds:5,
+		messages:[],
+		open:true};
+
+games.push(game);
+
+game = {name:"Party",
+		size:7,
+		players:[],
+		currentround:1,
+		maxrounds:5,
+		messages:[],
+		open:true};
+
+games.push(game);
+
+game = {name:"Five by Ten",
+		size:5,
+		players:[],
+		currentround:1,
+		maxrounds:10,
+		messages:[],
+		open:true};
+
+games.push(game);
+
+game = {name:"Quick and Dirty",
+		size:5,
+		players:[],
+		currentround:1,
+		maxrounds:3,
+		messages:[],
+		open:true};
+
+games.push(game);
+
 
 // when people connect, add them to the game
 
@@ -278,29 +414,24 @@ app.get('/', function(req, res){
 
 io.on("connection", function(socket){
 	var player = false;
-	var game = games[0];
+
 	socket.on("login", function(username){
 		if(username != null){
-			if(getPlayer(username, game) && getPlayer(username, game).socket.connected){
-				//they're already logged in
-			}else if(getPlayer(username, game)){
-				player = getPlayer(username, game);
+			player = findPlayer(username, socket);
+			console.log(player.name + ", logged in: " + player.game);
+			if(player && player.game){
+
+				game = player.game;
 				player.socket = socket;
 				console.log(player.name+" changed sockets");
+				sendInfo(player);
 
-				sendInfo(player, game);
-			} else if(game.open){
-				player = {};
-				player.name = username;
-				player.score = 0;
-				player.actions = {};
-				player.confirmed = false;
-				player.socket = socket;
-				player.rank = 0;
-				
-				addPlayer(player, game);
+			}else if(player && !player.game){
+
+				find_or_create_game(player);
+
 			}else{
-				//game is not open
+				//duplicate username
 			}
 		}
 
@@ -308,11 +439,10 @@ io.on("connection", function(socket){
 
 	socket.on("confirm", function(actions){
 		if(player){
+			console.log(player.name + " confirmed  !!!");
 			player.actions = actions;
-			player.confirmed = true;
-
-			game = doGame(game);
-			games[0] = game;
+			player.confirmed = !player.game.open;
+			doGame(player.game);
 		}
 	});
 
@@ -321,10 +451,10 @@ io.on("connection", function(socket){
 		text += "<br>score: "+player.score;
 		text += "<br>rank: "+player.rank;
 		message = {to:toName, from:player.name, content:text, official:true};
-		game.messages.push(message);
+		player.game.messages.push(message);
 
-		sendMessage(message, getPlayer(message.to, game));
-		sendMessage(message, getPlayer(message.from, game));
+		sendMessage(message, getPlayer(message.to, player.game));
+		sendMessage(message, getPlayer(message.from, player.game));
 	});
 
 	socket.on("message", function(msg){
@@ -341,11 +471,11 @@ io.on("connection", function(socket){
 			message.content = help_message;
 			message.official = true;
 			sendMessage(message, player);
-		}else if(getPlayer(player.name, game)){  // make sure they're in the game before sending anything
-			game.messages.push(newmessage);
+		}else{
+			player.game.messages.push(newmessage);
 
-			sendMessage(newmessage, getPlayer(newmessage.to, game));
-			sendMessage(newmessage, getPlayer(newmessage.from, game));
+			sendMessage(newmessage, getPlayer(newmessage.to, player.game));
+			sendMessage(newmessage, getPlayer(newmessage.from, player.game));
 		}
 	});
 
