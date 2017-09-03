@@ -3,7 +3,7 @@ var sio = require('socket.io');
 var app = express();
 var http = require('http').createServer(app);
 var io = sio(http);
-var port = process.env.PORT || 3030; //runs on heroku or localhost:3300
+var port = process.env.PORT || 3030; //runs on heroku or localhost:3030
 
 function sendGame(game, socket){
 	info = {name:game.name,
@@ -355,8 +355,18 @@ message object:
 
 var games = [];  // let's make a new game
 
-game = {name:"Small",
+game = {name:"Three's a Crowd",
 		size:3,
+		players:[],
+		currentround:1,
+		maxrounds:5,
+		messages:[],
+		open:true};
+
+games.push(game);
+
+game = {name:"Small",
+		size:4,
 		players:[],
 		currentround:1,
 		maxrounds:5,
@@ -370,6 +380,16 @@ game = {name:"Five by Five",
 		players:[],
 		currentround:1,
 		maxrounds:5,
+		messages:[],
+		open:true};
+
+games.push(game);
+
+game = {name:"Six by Six",
+		size:6,
+		players:[],
+		currentround:1,
+		maxrounds:6,
 		messages:[],
 		open:true};
 
