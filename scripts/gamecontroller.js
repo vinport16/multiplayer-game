@@ -59,6 +59,12 @@ function joinGame(name){
 	refreshPlayers();
 }
 
+function resetGame(name){
+	if(confirm("This will kick all players and restart the game.")){
+		socket.emit("resetGame", name);
+	}
+}
+
 socket.on("game", function(info){
 	addGame(info);
 });

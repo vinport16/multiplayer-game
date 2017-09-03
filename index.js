@@ -35,14 +35,14 @@ function sendMessage(message, player){
 	}
 }
 
-function sendGameClosedMessage(game){
+function sendGameMessage(game, str){
 	for(a = 0; a < game.players.length-1; a++){
 		for(b = a+1; b < game.players.length; b++){
 			message = {};
 			message.to = game.players[a].name;
 			message.from = game.players[b].name;
 			message.official = true;
-			message.content = "Game is full, play may begin.";
+			message.content = str; //"Game is full, play may begin.";
 			game.messages.push(message);
 			sendMessage(message, game.players[a]);
 			sendMessage(message, game.players[b]);
@@ -79,7 +79,7 @@ function addPlayer(player, game){
 	if(player.game.players.length >= player.game.size){
 		game.open = false;
 		console.log("GAME ("+game.name+") CLOSED");
-		sendGameClosedMessage(game);
+		sendGameMessage(game, "Game is full, play may begin.");
 	}
 }
 
@@ -237,12 +237,12 @@ function doGame(game){
 					messages:[],
 					open:true};
 
-		}
-
-		for(a = games.length-1; a >= 0; a--){
-			if(games[a].name == game.name){
-				games[a] = game;
+			for(a = games.length-1; a >= 0; a--){
+				if(games[a].name == game.name){
+					games[a] = game;
+				}
 			}
+
 		}
 
 	}
@@ -355,7 +355,7 @@ message object:
 
 var games = [];  // let's make a new game
 
-game = {name:"Three's a Crowd",
+game = {name:"Three is a Crowd",
 		size:3,
 		players:[],
 		currentround:1,
@@ -497,6 +497,27 @@ io.on("connection", function(socket){
 			sendMessage(newmessage, getPlayer(newmessage.to, player.game));
 			sendMessage(newmessage, getPlayer(newmessage.from, player.game));
 		}
+	});
+
+	socket.on("resetGame", function(gamename){
+		game = getGameByName(gamename);
+		game.open = true;
+		sendGameMessage(game, "This game was shut down. Refresh to join new game.");
+
+		game = {name:game.name,
+					size:game.size,
+					players:[],
+					currentround:1,
+					maxrounds:game.maxrounds,
+					messages:[],
+					open:true};
+
+		for(a = games.length-1; a >= 0; a--){
+			if(games[a].name == game.name){
+				games[a] = game;
+			}
+		}
+
 	});
 
 	socket.on("disconnect", function(){

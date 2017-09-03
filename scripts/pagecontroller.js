@@ -2,7 +2,7 @@ var list = document.getElementById("list");
 var messviewer = document.getElementById("messviewer");
 var chatwith = document.getElementById("chatwith");
 var newmessage = document.getElementById("textbox");
-var confirm = document.getElementById("confirm");
+var confirm_send = document.getElementById("confirm");
 var scorebox = document.getElementById("scorebox");
 var info = document.getElementById("info");
 var chat_shell = document.getElementById("chat_shell");
@@ -23,10 +23,10 @@ function addListItem(player){
 }
 
 function addGame(info){
-	string = "<li  onclick='joinGame(\""+info.name+"\");'><div class='namebox'>"+info.name+"</div></br>";
+	string = "<li><div  onclick='joinGame(\""+info.name+"\");'><div class='namebox'>"+info.name+"</div>";
 	string += "rounds: "+info.rounds+"</br>";
 	string += "occupancy: "+info.players+"/"+info.size+"</br>"
-	string += "is open: "+info.open+"</li>";
+	string += "is open: "+info.open+"</div></br><button onclick='resetGame(\""+info.name+"\");'>Reset Game</button></li>";
 	
 	list.innerHTML += string;
 }
@@ -95,7 +95,7 @@ function confirmActions(){
 	}
 
 	socket.emit("confirm", actions);
-	confirm.innerHTML = "resend actions";
+	confirm_send.innerHTML = "resend actions";
 }
 
 list.innerHTML = "";
