@@ -19,9 +19,9 @@
   "author": "vincent portelli",
   "license": "MIT",
   "dependencies": {
-    "express": "latest",
-    "fs": "latest",
-    "http": "latest",
-    "socket.io": "^2.0.2"
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "socket.io": "^2.0.4"
   }
 }

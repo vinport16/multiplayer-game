@@ -91,7 +91,7 @@ function sendInfo(player){
 			if(player.socket.connected){
 				console.log("sending player("+players[i].name+") to "+player.name);
 				player.socket.emit("newplayer", players[i].name);
-
+			}
 		}
 	}
 	// send messages
@@ -529,5 +529,5 @@ io.on("connection", function(socket){
 
 	socket.on("disconnect", function(){
 		console.log(player.name+" logged off");
-	})
+	});
 });

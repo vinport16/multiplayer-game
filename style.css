@@ -7,7 +7,7 @@ body{
 }
 
 div.list_shell {
-	background-color: lightpink;
+	background: linear-gradient(-45deg,rgb(250,100,100),rgb(250,150,150));
 	float:left;
 	width:30vw;
 	height:100vh;
@@ -19,11 +19,8 @@ div.inner_list {
 }
 
 li{
-	border-style: solid;
-	border-width: 3px;
 	border-radius: 5px;
-	border-color: white;
-	background-color: #ffcccc;
+	background: linear-gradient(-45deg,rgb(255,200,180),rgb(255,240,220));
 
 	list-style: none;
 	margin-top: 5px;
@@ -93,7 +90,7 @@ div.lastround{
 }
 
 div.chat_shell {
-	background-color: lightblue;
+	background: linear-gradient(-45deg,rgb(200,200,255),rgb(240,240,255));
 	float:right;
 	align-self: inline-block;
 	width: 70vw;
