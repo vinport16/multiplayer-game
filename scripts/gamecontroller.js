@@ -78,6 +78,10 @@ socket.on("clearList", function(){
 	clearList();
 });
 
+socket.on("clearCookie", function(){
+	setCookie("playername","",-60);
+});
+
 socket.on("message", function(msg){
 	if(msg.to == playername){
 		name = msg.from;

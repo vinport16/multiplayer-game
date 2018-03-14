@@ -79,7 +79,11 @@ function sendMessage(e){
 		message.from = playername;
 
 		newmessage.value = "";
-
+		if(message.content === "EXIT"){
+			//reset cookie and reload page
+			setCookie("playername","",-60);
+			location.reload();
+		}
 		//send the message to the server (if the player is real)
 		if(getPlayer(message.to)){
 			socket.emit("message",message);
