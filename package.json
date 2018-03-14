@@ -16,7 +16,7 @@
     "node": "6.9.1",
     "npm": "4.5.0"
   },
-  "author": "vincent",
+  "author": "vincent portelli",
   "license": "MIT",
   "dependencies": {
     "express": "latest",

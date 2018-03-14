@@ -88,10 +88,10 @@ function sendInfo(player){
 	players = player.game.players;
 	for(i = 0; i < players.length; i++){
 		if(players[i].name != player.name){
-			if(players[i].socket.connected){
+			if(player.socket.connected){
 				console.log("sending player("+players[i].name+") to "+player.name);
 				player.socket.emit("newplayer", players[i].name);
-			}
+
 		}
 	}
 	// send messages
