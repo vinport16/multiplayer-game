@@ -20,7 +20,7 @@ var socket = io();
 var players = [];
 
 function addPlayer(name){
-	player = 
+	player =
 	{name:name,
 	messages:[],
 	action:"ignore",
@@ -62,6 +62,7 @@ function joinGame(name){
 function resetGame(name){
 	if(confirm("This will kick all players and restart the game.")){
 		socket.emit("resetGame", name);
+		socket.emit("joinGame", false);
 	}
 }
 
@@ -83,13 +84,19 @@ socket.on("message", function(msg){
 	}else{
 		name = msg.to;
 	}
-	getPlayer(name).messages.push(msg);
-	if(name != currentchat){
-		getPlayer(name).unread = true;
-		refreshPlayers();
-	}else{
-		showMessages(currentchat);
+	if(getPlayer(name)){
+		getPlayer(name).messages.push(msg);
+		if(name != currentchat){
+			getPlayer(name).unread = true;
+			refreshPlayers();
+		}else{
+			showMessages(currentchat);
+		}
+	}else if(name === "game"){ //this is for when instructions are sent before a game is joined
+		messviewer.innerHTML = ""; //clear any previous messages
+		showMessage(msg);
 	}
+
 });
 
 socket.on("newscore", function(newscore){
@@ -99,7 +106,7 @@ socket.on("newscore", function(newscore){
 	str += " / score per opponent: "+(newscore.score/players.length);
 	info.innerHTML = str;
 
-	confirm.innerHTML = "confirm actions";
+	confirm_send.innerHTML = "confirm actions";
 })
 
 socket.emit("login", playername);

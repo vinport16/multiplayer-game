@@ -3,6 +3,7 @@ body{
 	padding:0px;
 	font-family: "Arial";
 	font-size: 16pt;
+	color: hsla(0,50%,0%,0.85);
 }
 
 div.list_shell {

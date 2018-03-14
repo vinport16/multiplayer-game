@@ -120,7 +120,7 @@ function determineRanks(players){
 				//tied for i+1=
 				players[i].rank = "#"+(i+1)+" (tie)";
 				lastrank = i+1;
-				
+
 			}else{
 				// = i+1
 				players[i].rank = "#"+(i+1);
@@ -249,12 +249,19 @@ function doGame(game){
 }
 
 function find_or_create_game(player){
-	
+
 	sendClearList(player);
 
 	for(i = 0; i < games.length; i++){
 		sendGame(games[i], player.socket);
 	}
+
+	instructions = "Welcome to my game!<br>"+
+	"To join a game, click on a game description on the left. If you enter an empty game, it will appear empty until someone else joins.<br>"+
+	"<br>This game is based on the prisoners dilemma. You are able to cooperate with, betray, or ignore other players. To see the scores that will result from these actions, type 'help' into the chat once the game has started.";
+	mes = {to:player.name, from:"game", content:instructions, official:true};
+	console.log("sent "+player.name+" the instructions message.");
+	sendMessage(mes, player);
 
 	player.socket.on("joinGame", function(gamename){
 		console.log(player.name+" requested join "+gamename);
@@ -524,12 +531,3 @@ io.on("connection", function(socket){
 		console.log(player.name+" logged off");
 	})
 });
-
-
-
-
-
-
-
-
-

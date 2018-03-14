@@ -25,9 +25,14 @@ function addListItem(player){
 function addGame(info){
 	string = "<li><div  onclick='joinGame(\""+info.name+"\");'><div class='namebox'>"+info.name+"</div>";
 	string += "rounds: "+info.rounds+"</br>";
-	string += "occupancy: "+info.players+"/"+info.size+"</br>"
-	string += "is open: "+info.open+"</div></br><button onclick='resetGame(\""+info.name+"\");'>Reset Game</button></li>";
-	
+	string += "occupancy: "+info.players+"/"+info.size+"</br>";
+	if(info.open){
+		string += "<font color='green'><strong>open</strong></font></br>";
+	}else{
+		string += "<font color='red'><strong>closed</strong></font></br>";
+	}
+	string += "</div><button onclick='resetGame(\""+info.name+"\");'>Reset Game</button></li>";
+
 	list.innerHTML += string;
 }
 
@@ -50,7 +55,7 @@ function showMessage(message){
 	}else{
 		messviewer.innerHTML += "<div class=\"messagebox\"><div class=\"them\">"+message.content+"</div></div>";
 	}
-	
+
 	chat_shell.scrollTop = chat_shell.scrollHeight;
 }
 
